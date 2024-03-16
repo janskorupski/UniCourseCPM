@@ -5,6 +5,7 @@ from pygame.locals import *
 import pymunk.pygame_util
 import Human
 import math
+import Newb
 
 # GLOBAL VARIABLES
 PLAYER_CATEGORY = 0b0001
@@ -112,6 +113,7 @@ class VirtualEnvironment:
 
 
 if __name__ == "__main__":
-    player = Human.Human()
+    # player = Human.Human()
+    player = Newb.Newb()
     env = VirtualEnvironment(players=[player])
     env.calculate_full_simulation()

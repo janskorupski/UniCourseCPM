@@ -2,8 +2,11 @@ import numpy as np
 import pymunk
 import math
 
-import VirtualEnvironment
-
+# GLOBAL VARIABLES
+PLAYER_CATEGORY = 0b0001
+WALL_CATEGORY   = 0b0010
+APPLE_CATEGORY  = 0B0100
+ALL_CATEGORIES  = [PLAYER_CATEGORY, WALL_CATEGORY, APPLE_CATEGORY]
 
 class Player:
 
@@ -43,11 +46,11 @@ class Player:
                                                                                    debug=debug))
         return sensory_input
 
-    def get_singular_sensor_data(self, angle_offset=0, max_length=100, debug=False):
+    def get_singular_sensor_data(self, angle_offset=0, max_length=150, debug=False):
         angle = self.body.angle + angle_offset
         looking_direction = pymunk.vec2d.Vec2d(math.cos(angle), math.sin(angle))
 
-        only_player_mask = pymunk.ShapeFilter.ALL_MASKS() ^ VirtualEnvironment.PLAYER_CATEGORY
+        only_player_mask = pymunk.ShapeFilter.ALL_MASKS() ^ PLAYER_CATEGORY
         filter_mask_player = pymunk.shape_filter.ShapeFilter(mask=only_player_mask)
         query = self.body.space.segment_query_first(self.body.position,
                                                     self.body.position + looking_direction * max_length,
@@ -68,7 +71,7 @@ class Player:
             return np.array([1, 0])
 
         categories = query.shape.filter.categories
-        if categories in VirtualEnvironment.ALL_CATEGORIES:
+        if categories in ALL_CATEGORIES:
             return np.array([query.alpha, categories])  # currently the categories here are powers of 2 (1, 2, 4, 8, ...)
         else:
             return np.array([query.alpha, 0])
