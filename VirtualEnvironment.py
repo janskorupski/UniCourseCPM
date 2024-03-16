@@ -5,6 +5,7 @@ import pygame
 from pygame.locals import *
 import pymunk.pygame_util
 import Human
+import math
 
 
 class VirtualEnvironment:
@@ -12,7 +13,7 @@ class VirtualEnvironment:
     def __init__(self, players, game_mode=True):
         self.players = players  # for now this should always be a list of length 1 with one object of type Player
         self.space = pymunk.Space()
-        self.space.gravity = (0,0)
+        self.space.gravity = (0, 0)
         self.game_mode = game_mode
         self.wall = None
 
@@ -60,9 +61,8 @@ class VirtualEnvironment:
         for player in self.players:
 
             output = player.get_motor_output()
-            player.body.apply_force_at_local_point((0, -output[0]))
-            player.body.apply_force_at_local_point((0, output[2]))
-            player.body.angular_velocity = output[3] - output[1]
+            player.body.apply_force_at_local_point((output[0], 0))
+            player.body.angular_velocity = output[1]
 
             player.body.velocity = player.body.velocity*0.95  # this is a temporary bodge
 
