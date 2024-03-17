@@ -5,7 +5,7 @@ import math
 # GLOBAL VARIABLES
 PLAYER_CATEGORY = 0b0001
 WALL_CATEGORY   = 0b0010
-APPLE_CATEGORY  = 0B0100
+APPLE_CATEGORY  = 0b0100
 ALL_CATEGORIES  = [PLAYER_CATEGORY, WALL_CATEGORY, APPLE_CATEGORY]
 
 class Player:
@@ -37,6 +37,8 @@ class Player:
         pass
 
     def get_sensory_input(self, debug=False):
+        # debug displays the sensor rays in the window
+
         sensory_input = np.array([])
         offset_angles = [self.field_of_view*(-1/2 + i/(self.visual_resolution-1)) for i in range(self.visual_resolution)]
         while len(self.rays):

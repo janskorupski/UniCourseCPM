@@ -10,7 +10,7 @@ import Newb
 # GLOBAL VARIABLES
 PLAYER_CATEGORY = 0b0001
 WALL_CATEGORY   = 0b0010
-APPLE_CATEGORY  = 0B0100
+APPLE_CATEGORY  = 0b0100
 ALL_CATEGORIES  = [PLAYER_CATEGORY, WALL_CATEGORY, APPLE_CATEGORY]
 
 class VirtualEnvironment:
@@ -32,7 +32,6 @@ class VirtualEnvironment:
             self.running = False
 
     def create_room(self):
-        # Create a static platform (segment shape)
         platform_body = pymunk.Body(body_type=pymunk.Body.STATIC)
         platform_shape = pymunk.Segment(platform_body, (0, 0), (600, 0), 5)
         platform_shape.friction = 1  # Adjust friction if needed
@@ -40,21 +39,18 @@ class VirtualEnvironment:
         self.wall = platform_shape
         self.space.add(platform_body, platform_shape)
 
-        # Create a static platform (segment shape)
         platform_body = pymunk.Body(body_type=pymunk.Body.STATIC)
         platform_shape = pymunk.Segment(platform_body, (600, 0), (600, 400), 5)
         platform_shape.friction = 1  # Adjust friction if needed
         platform_shape.filter = pymunk.ShapeFilter(categories=WALL_CATEGORY)
         self.space.add(platform_body, platform_shape)
 
-        # Create a static platform (segment shape)
         platform_body = pymunk.Body(body_type=pymunk.Body.STATIC)
         platform_shape = pymunk.Segment(platform_body, (600, 400), (0, 400), 5)
         platform_shape.friction = 1  # Adjust friction if needed
         platform_shape.filter = pymunk.ShapeFilter(categories=WALL_CATEGORY)
         self.space.add(platform_body, platform_shape)
 
-        # Create a static platform (segment shape)
         platform_body = pymunk.Body(body_type=pymunk.Body.STATIC)
         platform_shape = pymunk.Segment(platform_body, (0, 400), (0, 0), 5)
         platform_shape.friction = 1  # Adjust friction if needed
@@ -102,11 +98,6 @@ class VirtualEnvironment:
 
     def calculate_reward(self) -> float:
         pass
-
-    def get_sensory_data(self) -> np.ndarray:
-        # dummy return
-        return np.array([5., 5., 4., 3., 4., 5., 1.,  # odległość od punktu
-                         0, 0, 1, 1, 1, 0, 2])  # jaki rodzaj obiektu (np. 0-nic, 1-ściana, 2-jabłko)
 
     def plot_game_state(self):
         pass
