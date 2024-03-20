@@ -31,7 +31,22 @@ class VirtualEnvironment:
             self.draw_options = pymunk.pygame_util.DrawOptions(self.screen)
             self.running = False
 
+    def insert_wall(self, position_x, position_y):
+        pass
+
+    def insert_apple(self, position):
+        pass
+
+    def insert_obstacle(self, position):
+        pass
+
+    def check_if_enough_space(self, shape):
+        # jan
+        pass
+
     def create_room(self):
+        ''' Uses self.insert_players, self.insert_apple, self.inset_wall to randomly  '''
+
         platform_body = pymunk.Body(body_type=pymunk.Body.STATIC)
         platform_shape = pymunk.Segment(platform_body, (0, 0), (600, 0), 5)
         platform_shape.friction = 1  # Adjust friction if needed
@@ -57,13 +72,14 @@ class VirtualEnvironment:
         platform_shape.filter = pymunk.ShapeFilter(categories=WALL_CATEGORY)
         self.space.add(platform_body, platform_shape)
 
-    def insert_players(self):
+    def insert_players(self, position=(200, 200)):
         for player in self.players:
-            player.body.position = (200, 200)
+            player.body.position = position
             self.space.add(player.body, player.shape)
 
     def calculate_step(self):
         for player in self.players:
+
             output = player.get_motor_output()
             player.body.apply_force_at_local_point((output[0], 0))
             player.body.angular_velocity = output[1]
@@ -96,7 +112,7 @@ class VirtualEnvironment:
                 # Cap the frame rate
                 self.clock.tick(60)
 
-    def calculate_reward(self) -> float:
+    def calculate_distance_from_apple(self, player):
         pass
 
     def plot_game_state(self):

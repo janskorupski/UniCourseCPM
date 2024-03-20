@@ -1,7 +1,6 @@
 import numpy as np
 import pymunk
 import math
-
 # GLOBAL VARIABLES
 PLAYER_CATEGORY = 0b0001
 WALL_CATEGORY   = 0b0010
@@ -77,3 +76,11 @@ class Player:
             return np.array([query.alpha, categories])  # currently the categories here are powers of 2 (1, 2, 4, 8, ...)
         else:
             return np.array([query.alpha, 0])
+
+    def calculate_shortest_distance_from_apple(self):
+        # Jan
+        pass
+
+    def fitness_function(self):
+        return self.points + 1 - math.atan(self.calculate_shortest_distance_from_apple())/math.pi*2
+

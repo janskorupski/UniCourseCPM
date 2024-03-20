@@ -3,8 +3,9 @@ import Player
 
 class Newb(Player.Player):
 
-    def __init__(self):
+    def __init__(self, parameters=[0.1, 0.2, 0.5, 0.8, 0.5, 0.2, 0.1]):
         super().__init__()
+        self.parameters = parameters
 
     def get_motor_output(self) -> np.ndarray:
         sensory_input = self.get_sensory_input()
