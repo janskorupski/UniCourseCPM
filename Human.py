@@ -13,7 +13,5 @@ class Human(Player.Player):
 
     def get_motor_output(self) -> np.ndarray:
         # the neural networks (simply the forwards propagation)
-        return np.array([int(keyboard.is_pressed("w"))*500,
-                int(keyboard.is_pressed("a"))*1,
-                int(keyboard.is_pressed("s"))*500,
-                int(keyboard.is_pressed("d"))*1])
+        return np.array([int(keyboard.is_pressed("w")) * 500 - int(keyboard.is_pressed("s")) * 500,
+                         int(keyboard.is_pressed("d")) * 1 - int(keyboard.is_pressed("a")) * 1])

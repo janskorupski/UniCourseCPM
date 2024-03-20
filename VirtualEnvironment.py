@@ -1,18 +1,24 @@
 import numpy as np
-import Player
 import pymunk
 import pygame
 from pygame.locals import *
 import pymunk.pygame_util
 import Human
+import math
+import Newb
 
+# GLOBAL VARIABLES
+PLAYER_CATEGORY = 0b0001
+WALL_CATEGORY   = 0b0010
+APPLE_CATEGORY  = 0b0100
+ALL_CATEGORIES  = [PLAYER_CATEGORY, WALL_CATEGORY, APPLE_CATEGORY]
 
 class VirtualEnvironment:
 
     def __init__(self, players, game_mode=True):
         self.players = players  # for now this should always be a list of length 1 with one object of type Player
         self.space = pymunk.Space()
-        self.space.gravity = (0,0)
+        self.space.gravity = (0, 0)
         self.game_mode = game_mode
         self.wall = None
 
@@ -25,46 +31,60 @@ class VirtualEnvironment:
             self.draw_options = pymunk.pygame_util.DrawOptions(self.screen)
             self.running = False
 
+    def insert_wall(self, position_x, position_y):
+        pass
+
+    def insert_apple(self, position):
+        pass
+
+    def insert_obstacle(self, position):
+        pass
+
+    def check_if_enough_space(self, shape):
+        # jan
+        pass
+
     def create_room(self):
-        # Create a static platform (segment shape)
+        ''' Uses self.insert_players, self.insert_apple, self.inset_wall to randomly  '''
+
         platform_body = pymunk.Body(body_type=pymunk.Body.STATIC)
         platform_shape = pymunk.Segment(platform_body, (0, 0), (600, 0), 5)
         platform_shape.friction = 1  # Adjust friction if needed
+        platform_shape.filter = pymunk.ShapeFilter(categories=WALL_CATEGORY)
         self.wall = platform_shape
         self.space.add(platform_body, platform_shape)
 
-        # Create a static platform (segment shape)
         platform_body = pymunk.Body(body_type=pymunk.Body.STATIC)
         platform_shape = pymunk.Segment(platform_body, (600, 0), (600, 400), 5)
         platform_shape.friction = 1  # Adjust friction if needed
+        platform_shape.filter = pymunk.ShapeFilter(categories=WALL_CATEGORY)
         self.space.add(platform_body, platform_shape)
 
-        # Create a static platform (segment shape)
         platform_body = pymunk.Body(body_type=pymunk.Body.STATIC)
         platform_shape = pymunk.Segment(platform_body, (600, 400), (0, 400), 5)
         platform_shape.friction = 1  # Adjust friction if needed
+        platform_shape.filter = pymunk.ShapeFilter(categories=WALL_CATEGORY)
         self.space.add(platform_body, platform_shape)
 
-        # Create a static platform (segment shape)
         platform_body = pymunk.Body(body_type=pymunk.Body.STATIC)
         platform_shape = pymunk.Segment(platform_body, (0, 400), (0, 0), 5)
         platform_shape.friction = 1  # Adjust friction if needed
+        platform_shape.filter = pymunk.ShapeFilter(categories=WALL_CATEGORY)
         self.space.add(platform_body, platform_shape)
 
-    def insert_players(self):
+    def insert_players(self, position=(200, 200)):
         for player in self.players:
-            player.body.position = (200, 200)
+            player.body.position = position
             self.space.add(player.body, player.shape)
 
     def calculate_step(self):
         for player in self.players:
 
             output = player.get_motor_output()
-            player.body.apply_force_at_local_point((0, -output[0]))
-            player.body.apply_force_at_local_point((0, output[2]))
-            player.body.angular_velocity = output[3] - output[1]
-
-            player.body.velocity = player.body.velocity*0.95  # this is a temporary bodge
+            player.body.apply_force_at_local_point((output[0], 0))
+            player.body.angular_velocity = output[1]
+            # print([round(num, 2) for num in player.get_sensory_input(debug=True)])
+            player.body.velocity = player.body.velocity * 0.95  # this is a temporary bodge
 
         self.space.step(1 / 60.0)
 
@@ -92,18 +112,15 @@ class VirtualEnvironment:
                 # Cap the frame rate
                 self.clock.tick(60)
 
-    def calculate_reward(self) -> float:
+    def calculate_distance_from_apple(self, player):
         pass
-
-    def get_sensory_data(self) -> np.ndarray:
-        # dummy return
-        return np.array([5., 5., 4., 3., 4., 5., 1., # odległość od punktu
-                0,0,1,1,1,0,2]) # jaki rodzaj obiektu (np. 0-nic, 1-ściana, 2-jabłko)
 
     def plot_game_state(self):
         pass
 
+
 if __name__ == "__main__":
-    player = Human.Human()
+    # player = Human.Human()
+    player = Newb.Newb()
     env = VirtualEnvironment(players=[player])
     env.calculate_full_simulation()
