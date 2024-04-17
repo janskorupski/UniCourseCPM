@@ -7,6 +7,7 @@ import Human
 import Newb
 import math
 import random
+import time
 
 # GLOBAL VARIABLES
 PLAYER_CATEGORY = 0b0001
@@ -23,17 +24,22 @@ class VirtualEnvironment:
 
     def __init__(self, players, n_obstacles=15, game_mode=True):
 
+        # GAME SETTINGS
+        self.in_game_time = 0
+        self.max_time = 10
+
+        # GAME OBJECTS
         self.players = players  # for now this should always be a list of length 1 with one object of type Player
+        self.apple = None
 
         # Radius of player
-        self.R = self.players[0].shape.radius  # To fit everyth. on the plane
-        
-        # Creates plane with walls, players, obstacles, apples
-        self.create_room(n_obstacles)
+        self.R = self.players[0].shape.radius  # To fit everythg on the plane
 
         # to watch game
-        self.game_mode = game_mode  
+        self.game_mode = game_mode
 
+        # Creates plane with walls, players, obstacles, apples
+        self.create_room(n_obstacles)
 
         if self.game_mode: self.start_pygame() 
 
@@ -74,7 +80,8 @@ class VirtualEnvironment:
     def insert_players(self):
         for player in self.players:
             player.body.position = self.get_position('player')
-            player.shape.collision_type = PLAYER_COLLISION_TYPE 
+            player.shape.collision_type = PLAYER_COLLISION_TYPE
+            player.space = self
             self.space.add(player.body, player.shape)
 
 
@@ -101,14 +108,15 @@ class VirtualEnvironment:
         
         self.apple_radius = self.R // 2 
 
-        apple = pymunk.Circle(self.space.static_body, radius=self.apple_radius, 
-                              offset=self.get_position('apple'))
+        self.apple = pymunk.Circle(self.space.static_body, radius=self.apple_radius)
+        self.apple.body.position = self.get_position('apple')
         
-        apple.friction = .5
-        apple.filter = pymunk.ShapeFilter(categories=APPLE_CATEGORY)
-        apple.collision_type = APPLE_COLLISION_TYPE 
+        self.apple.friction = .5
+        self.apple.filter = pymunk.ShapeFilter(categories=APPLE_CATEGORY)
+        self.apple.collision_type = APPLE_COLLISION_TYPE
 
-        self.space.add(apple)
+
+        self.space.add(self.apple)
     
 
     def get_position(self, element:str) -> tuple[int, int]: 
@@ -141,7 +149,6 @@ class VirtualEnvironment:
             # Clean up temporary objects not added to space
             del body
             del free_space
-            print(1)
 
     
     def player_apple_collision(self, arbiter, space, data):
@@ -177,6 +184,7 @@ class VirtualEnvironment:
             player.body.velocity = player.body.velocity * 0.95  # this is a temporary bodge
 
         self.space.step(1 / 60.0)
+        self.in_game_time += 1
 
 
     def calculate_full_simulation(self):
@@ -202,6 +210,29 @@ class VirtualEnvironment:
 
                 # Cap the frame rate
                 self.clock.tick(60)
+        else:
+            start_time = time.time()
+            running = True
+            while self.in_game_time < self.max_time:
+
+                # Step the simulation
+                self.calculate_step()
+
+
+
+    def fitness_function(self):
+        for player in self.players:
+
+            apples_eaten = player.points
+
+            distance_from_apple = player.body.position.get_distance(self.apple.body.position)
+            sigmoid = 1 - math.atan(distance_from_apple)/math.pi*2
+
+            fitness = apples_eaten + sigmoid
+            player.fitness = fitness
+
+
+
 
 
     def calculate_distance_from_apple(self, player):
@@ -211,5 +242,6 @@ class VirtualEnvironment:
 if __name__ == "__main__":
     # player = Human.Human()
     player = Human.Human()
-    env = VirtualEnvironment(players=[player])
-    env.calculate_full_simulation()
+    # player = Newb.Newb()
+    env1 = VirtualEnvironment(players=[player], game_mode=True)
+    env1.calculate_full_simulation()

@@ -41,7 +41,7 @@ class VirtualEnvironment:
         pass
 
     def check_if_enough_space(self, shape):
-        # jan
+        # shape = pymunk.Shape()
         pass
 
     def create_room(self):
