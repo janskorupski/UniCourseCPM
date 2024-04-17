@@ -147,8 +147,13 @@ class VirtualEnvironment:
     def player_apple_collision(self, arbiter, space, data):
         print("Collected")
         # Optionally, remove the apple from the space if it's a one-time collectible
-        # space.remove(arbiter.shapes[0], arbiter.shapes[1].body, arbiter.shapes[1])
-        # self.insert_apple(self)
+        space.remove(arbiter.shapes[1], arbiter.shapes[1])
+        
+        for player in self.players: 
+            player.add_point()
+
+        self.insert_apples()
+
         # return True  # Return True to process the collision
 
 
@@ -205,6 +210,6 @@ class VirtualEnvironment:
 
 if __name__ == "__main__":
     # player = Human.Human()
-    player = Newb.Newb()
+    player = Human.Human()
     env = VirtualEnvironment(players=[player])
     env.calculate_full_simulation()

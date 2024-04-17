@@ -35,6 +35,10 @@ class Player:
         # the neural networks (simply the forwards propagation)
         pass
 
+    def add_point(self): 
+        self.points +=1 
+        print(self.points)
+
     def get_sensory_input(self, debug=False):
         # debug displays the sensor rays in the window
 
