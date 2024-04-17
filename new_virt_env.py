@@ -13,6 +13,8 @@ PLAYER_CATEGORY = 0b0001
 WALL_CATEGORY   = 0b0010
 APPLE_CATEGORY  = 0b0100
 ALL_CATEGORIES  = [PLAYER_CATEGORY, WALL_CATEGORY, APPLE_CATEGORY]
+PLAYER_COLLISION_TYPE = 1
+APPLE_COLLISION_TYPE = 2
 WIDTH, HEIGHT = SIZE =  (800,400) 
 CENTER = (WIDTH//2, HEIGHT//2)
 
@@ -50,6 +52,9 @@ class VirtualEnvironment:
         
         self.insert_obstacles(n_obstacles)
 
+        handler = self.space.add_collision_handler(PLAYER_COLLISION_TYPE, APPLE_COLLISION_TYPE)
+        handler.begin = self.player_apple_collision
+
 
     def insert_walls(self): 
         static_walls = [
@@ -69,6 +74,7 @@ class VirtualEnvironment:
     def insert_players(self):
         for player in self.players:
             player.body.position = self.get_position('player')
+            player.shape.collision_type = PLAYER_COLLISION_TYPE 
             self.space.add(player.body, player.shape)
 
 
@@ -76,7 +82,7 @@ class VirtualEnvironment:
 
         self.obstacle_size = (self.R * 2, self.R * 2)  
 
-        obstacles = []
+        self.obstacles = []
 
         for obstacle in range(n_obstacles): 
             body = pymunk.Body(body_type=pymunk.Body.STATIC)
@@ -88,7 +94,7 @@ class VirtualEnvironment:
             
             # Add the body and shape to the space and to the obstacles list
             self.space.add(body, obstacle)
-            obstacles.append(obstacle)
+            self.obstacles.append(obstacle)
 
 
     def insert_apples(self):
@@ -100,6 +106,7 @@ class VirtualEnvironment:
         
         apple.friction = .5
         apple.filter = pymunk.ShapeFilter(categories=APPLE_CATEGORY)
+        apple.collision_type = APPLE_COLLISION_TYPE 
 
         self.space.add(apple)
     
@@ -135,6 +142,14 @@ class VirtualEnvironment:
             del body
             del free_space
             print(1)
+
+    
+    def player_apple_collision(self, arbiter, space, data):
+        print("Collected")
+        # Optionally, remove the apple from the space if it's a one-time collectible
+        # space.remove(arbiter.shapes[0], arbiter.shapes[1].body, arbiter.shapes[1])
+        # self.insert_apple(self)
+        # return True  # Return True to process the collision
 
 
     def start_pygame(self) -> None: 
