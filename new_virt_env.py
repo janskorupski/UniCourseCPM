@@ -209,7 +209,7 @@ class VirtualEnvironment:
                 pygame.display.flip()
 
                 # Cap the frame rate
-                self.clock.tick(60)
+                self.clock.tick(600)
         else:
             start_time = time.time()
             running = True
@@ -226,9 +226,10 @@ class VirtualEnvironment:
             apples_eaten = player.points
 
             distance_from_apple = player.body.position.get_distance(self.apple.body.position)
-            sigmoid = 1 - math.atan(distance_from_apple)/math.pi*2
+            max_distance = math.sqrt(WIDTH**2 + HEIGHT**2)
+            distance_score = math.exp(-3*distance_from_apple/max_distance)
 
-            fitness = apples_eaten + sigmoid
+            fitness = apples_eaten + distance_score
             player.fitness = fitness
 
 
@@ -241,7 +242,9 @@ class VirtualEnvironment:
 
 if __name__ == "__main__":
     # player = Human.Human()
-    player = Human.Human()
-    # player = Newb.Newb()
+    # player = Human.Human()
+    player = Newb.Newb()
     env1 = VirtualEnvironment(players=[player], game_mode=True)
     env1.calculate_full_simulation()
+    env1.fitness_function()
+    print(player.fitness)
