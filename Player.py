@@ -22,7 +22,7 @@ class Player:
         self.rays = []
 
         # PYMUNK SETTINGS
-        radius = 30
+        radius = 10
         mass = 1
         moment = pymunk.moment_for_circle(mass, 0, radius)
         self.body = pymunk.Body(mass, moment)
