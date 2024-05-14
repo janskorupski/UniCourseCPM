@@ -1,6 +1,7 @@
 import pygad
 import VirtualEnvironment
-import Player
+import Net
+import torchga
 
 # use the implemented VirtualEnvironment and Player classes to find an optimal player
 # this has to be done either with a Genetic Algorithm (GA) or Simulated Annealing (SA)
@@ -8,7 +9,7 @@ import Player
 
 
 def fitness_function(ga_instance, parameters, solution_idx):
-    player = Player.Player(parameters)
+    player = Net.Net(parameters)
     environment = VirtualEnvironment.VirtualEnvironment([player])
     environment.calculate_full_simulation()
     fitness = environment.calculate_reward()
@@ -19,7 +20,7 @@ num_generations = 50
 num_parents_mating = 4
 
 sol_per_pop = 8
-num_genes = None # number of parameters to be used in the Players' neural networks
+num_genes =  # number of parameters to be used in the Players' neural networks
 
 init_range_low = -3
 init_range_high = 3

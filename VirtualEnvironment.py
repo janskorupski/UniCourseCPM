@@ -5,7 +5,9 @@ from pygame.locals import *
 import pymunk.pygame_util
 import Human
 import math
+import Net
 import Newb
+import FeedForward
 
 # GLOBAL VARIABLES
 PLAYER_CATEGORY = 0b0001
@@ -121,6 +123,8 @@ class VirtualEnvironment:
 
 if __name__ == "__main__":
     # player = Human.Human()
-    player = Newb.Newb()
+    # player = Newb.Newb()
+    player = Net.Net(parameters=np.array([0.1, 0.2, 0.5, 0.8, 0.5, 0.2, 0.1, -0.1, -0.2, -0.5, -0.8, -0.5, -0.2, -0.1]))
+    # player = FeedForward.FeedForward(np.array([0.1,0.2,0.5,0.2,0.1,-0.1,0-.2,-0.5,-0.2,-0.1]))
     env = VirtualEnvironment(players=[player])
     env.calculate_full_simulation()
