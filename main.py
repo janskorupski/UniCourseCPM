@@ -1,28 +1,53 @@
 import pygad
-import VirtualEnvironment
-import Player
+from new_virt_env import *
+import Net
 
 # use the implemented VirtualEnvironment and Player classes to find an optimal player
 # this has to be done either with a Genetic Algorithm (GA) or Simulated Annealing (SA)
 # below is what it could look like with GA (copied from https://pygad.readthedocs.io/en/latest/)
-
+i = 0
 
 def fitness_function(ga_instance, parameters, solution_idx):
-    player = Player.Player(parameters)
-    environment = VirtualEnvironment.VirtualEnvironment([player])
+    global i
+    player = Net.Net(parameters)
+    overall_fitness = 0
+
+    environment = VirtualEnvironment([player])
     environment.calculate_full_simulation()
-    fitness = environment.calculate_reward()
-    return fitness
+    environment.fitness_function()
+    overall_fitness += player.fitness
+
+    player = Net.Net(parameters)
+    environment = VirtualEnvironment([player])
+    environment.calculate_full_simulation()
+    environment.fitness_function()
+    overall_fitness += player.fitness
+
+    player = Net.Net(parameters)
+    environment = VirtualEnvironment([player])
+    environment.calculate_full_simulation()
+    environment.fitness_function()
+    overall_fitness += player.fitness
+
+    player = Net.Net(parameters)
+    environment = VirtualEnvironment([player])
+    environment.calculate_full_simulation()
+    environment.fitness_function()
+    overall_fitness += player.fitness
+
+    i += 1
+    print(f"{i}/{50*12} : {overall_fitness/4}")
+    return overall_fitness/4
 
 
 num_generations = 50
-num_parents_mating = 4
+num_parents_mating = 5
 
-sol_per_pop = 8
-num_genes = None # number of parameters to be used in the Players' neural networks
+sol_per_pop = 12
+num_genes = 900  # number of parameters to be used in the Players' neural networks
 
-init_range_low = -3
-init_range_high = 3
+init_range_low = -1
+init_range_high = 1
 
 parent_selection_type = "sss"
 keep_parents = 1
@@ -48,5 +73,10 @@ ga_instance = pygad.GA(num_generations=num_generations,
 ga_instance.run()
 
 solution, solution_fitness, solution_idx = ga_instance.best_solution()
-print("Parameters of the best solution : {solution}".format(solution=solution))
+# print("Parameters of the best solution : {solution}".format(solution=solution))
 print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
+
+player = Net.Net(solution)
+environment = VirtualEnvironment([player], game_mode=True)
+environment.calculate_full_simulation()
+environment.fitness_function()
