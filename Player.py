@@ -15,6 +15,7 @@ class Player:
         # self.nn=new_neural_network(parameters)
 
         self.points = 0
+        self.fitness = 0
 
         # SENSOR SETTINGS
         self.visual_resolution = 7  # number of sensors
@@ -22,7 +23,7 @@ class Player:
         self.rays = []
 
         # PYMUNK SETTINGS
-        radius = 30
+        radius = 10
         mass = 1
         moment = pymunk.moment_for_circle(mass, 0, radius)
         self.body = pymunk.Body(mass, moment)
@@ -31,9 +32,15 @@ class Player:
         self.shape.friction = 0.1
         self.shape.filter = pymunk.ShapeFilter(categories=0b1)
 
+        self.space = None
+
     def get_motor_output(self, sensory_input: np.ndarray) -> np.ndarray:
         # the neural networks (simply the forwards propagation)
         pass
+
+    def add_point(self): 
+        self.points +=1 
+        print(self.points)
 
     def get_sensory_input(self, debug=False):
         # debug displays the sensor rays in the window
@@ -80,7 +87,4 @@ class Player:
     def calculate_shortest_distance_from_apple(self):
         # Jan
         pass
-
-    def fitness_function(self):
-        return self.points + 1 - math.atan(self.calculate_shortest_distance_from_apple())/math.pi*2
 
