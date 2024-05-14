@@ -8,6 +8,7 @@ import Newb
 import math
 import random
 import time
+import Net
 
 # GLOBAL VARIABLES
 PLAYER_CATEGORY = 0b0001
@@ -22,11 +23,11 @@ CENTER = (WIDTH//2, HEIGHT//2)
 
 class VirtualEnvironment:
 
-    def __init__(self, players, n_obstacles=15, game_mode=True):
+    def __init__(self, players, n_obstacles=15, game_mode=False):
 
         # GAME SETTINGS
         self.in_game_time = 0
-        self.max_time = 10
+        self.max_time = 600
 
         # GAME OBJECTS
         self.players = players  # for now this should always be a list of length 1 with one object of type Player
@@ -243,7 +244,9 @@ class VirtualEnvironment:
 if __name__ == "__main__":
     # player = Human.Human()
     # player = Human.Human()
-    player = Newb.Newb()
+    # player = Newb.Newb()
+    player = Net.Net(parameters=np.random.random(900))
+    # player = Net.Net(parameters=np.arange(900, dtype="float"))
     env1 = VirtualEnvironment(players=[player], game_mode=True)
     env1.calculate_full_simulation()
     env1.fitness_function()

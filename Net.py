@@ -6,44 +6,74 @@ import torch.nn.functional as F
 
 
 class NeuralNet(nn.Module):
-    def __init__(self):
+    def __init__(self, layers_outline = [[14, 28],
+                                         [28, 56],
+                                         [56, 14],
+                                         [14, 2]]):
         super(NeuralNet, self).__init__()
-        self.l = nn.Sequential(
-            nn.Linear(7, 14),
-            nn.ReLU(),
-            nn.Linear(14, 28),
-            nn.ReLU(),
-            nn.Linear(28, 14),
-            nn.ReLU(),
-            nn.Linear(14, 2)
-        )
+        self.layers_outline = layers_outline
+
+        self.l = nn.Sequential()
+
+        for i, layer in enumerate(self.layers_outline):
+            self.l.append(nn.Linear(layer[0], layer[1]))
+            self.l.append(nn.ReLU())
+
+        self.l.pop(-1)
+
 
 
 class Net(Player.Player):
 
-    def __init__(self, parameters=None):
+    def __init__(self,
+                 parameters=None,
+                 layers_outline=[[14, 28],
+                                 [28, 14],
+                                 [14, 2]]
+                 ):
         # 'parameters' are the parameters of the neural network (weights and biases).
         # For every player, these parameters are fixed, as they will be generate by GA.
         super().__init__()
-        self.nn=self.new_neural_network(parameters)
+        self.layers_outline = layers_outline
+        self.net=self.new_neural_network(parameters)
+
 
     def get_motor_output(self) -> np.ndarray:
 
-        return self.nn(self.get_sensory_input())
-    
-    def new_neural_network(self, parameters): 
-        net = NeuralNet()
-        with torch.no_grad():
-            net.l[0].weight = nn.Parameter(torch.tensor(parameters[0].reshape(7, 14)))
-            net.l[0].bias = nn.Parameter(torch.tensor(parameters[1]))
-            net.l[1].weight = nn.Parameter(torch.tensor(parameters[2].reshape(14, 28)))
-            net.l[1].bias = nn.Parameter(torch.tensor(parameters[3]))
-            net.l[2].weight = nn.Parameter(torch.tensor(parameters[4].reshape(28, 14)))
-            net.l[2].bias = nn.Parameter(torch.tensor(parameters[5]))
-            net.l[3].weight = nn.Parameter(torch.tensor(parameters[6].reshape(14, 2)))
-            net.l[3].bias = nn.Parameter(torch.tensor(parameters[7]))
-            print(net.l[0].weight)
+        s_input = torch.tensor(self.get_sensory_input())
+        return self.net.l(s_input)
 
-        print("network", net.l[0].weight)
+    def new_neural_network(self, parameters): 
+        net = NeuralNet(self.layers_outline)
+
+        no_of_values_taken = 0
+        for i, layer in enumerate(self.layers_outline):
+            no_of_weights = layer[0]*layer[1]
+            no_of_biases = layer[1]
+
+            start = no_of_values_taken
+            stop = no_of_values_taken+no_of_weights
+
+            net.l[2*i].weight = nn.Parameter(torch.tensor(
+                parameters[start:stop].reshape(
+                    layer[1],
+                    layer[0])
+            ), requires_grad=False)
+
+            start = stop
+            stop = start + no_of_biases
+            no_of_values_taken = stop
+
+            net.l[2 * i].bias = nn.Parameter(torch.tensor(
+                parameters[start:stop]
+            ), requires_grad=False)
 
         return net
+
+if __name__ == "__main__":
+
+    aaa = Net(parameters=np.array(list(range(30))),
+              layers_outline=[[2,3],
+                              [3,2]])
+    print(aaa.get_motor_output())
+    pass
