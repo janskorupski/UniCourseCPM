@@ -74,6 +74,7 @@ ga_instance = pygad.GA(num_generations=num_generations,
 
 ga_instance.run()
 
+ga_instance.save(f"GAresults{round(random.random()*1e6)}")
 
 solution, solution_fitness, solution_idx = ga_instance.best_solution()
 # print("Parameters of the best solution : {solution}".format(solution=solution))
