@@ -7,6 +7,24 @@ import Net
 # below is what it could look like with GA (copied from https://pygad.readthedocs.io/en/latest/)
 i = 0
 
+
+num_generations = 10
+num_parents_mating = 5
+
+sol_per_pop = 12
+num_genes = 900  # number of parameters to be used in the Players' neural networks
+
+init_range_low = -0.1
+init_range_high = 0.1
+
+parent_selection_type = "sss"
+keep_parents = 1
+
+crossover_type = "single_point"
+
+mutation_type = "random"
+mutation_percent_genes = 10
+
 def fitness_function(ga_instance, parameters, solution_idx):
     global i
     player = Net.Net(parameters)
@@ -36,26 +54,10 @@ def fitness_function(ga_instance, parameters, solution_idx):
     overall_fitness += player.fitness
 
     i += 1
-    print(f"{i}/{50*12} : {overall_fitness/4}")
+    print(f"{i}/{num_generations*sol_per_pop} : {overall_fitness/4}")
     return overall_fitness/4
 
 
-num_generations = 50
-num_parents_mating = 5
-
-sol_per_pop = 12
-num_genes = 900  # number of parameters to be used in the Players' neural networks
-
-init_range_low = -1
-init_range_high = 1
-
-parent_selection_type = "sss"
-keep_parents = 1
-
-crossover_type = "single_point"
-
-mutation_type = "random"
-mutation_percent_genes = 10
 
 ga_instance = pygad.GA(num_generations=num_generations,
                        num_parents_mating=num_parents_mating,
@@ -71,6 +73,7 @@ ga_instance = pygad.GA(num_generations=num_generations,
                        mutation_percent_genes=mutation_percent_genes)
 
 ga_instance.run()
+
 
 solution, solution_fitness, solution_idx = ga_instance.best_solution()
 # print("Parameters of the best solution : {solution}".format(solution=solution))
