@@ -80,7 +80,10 @@ class Player:
 
         categories = query.shape.filter.categories
         if categories in ALL_CATEGORIES:
-            return np.array([query.alpha, categories])  # currently the categories here are powers of 2 (1, 2, 4, 8, ...)
+            if categories == APPLE_CATEGORY:
+                return np.array([query.alpha, 1])
+            if categories == WALL_CATEGORY:
+                return np.array([query.alpha, -1])
         else:
             return np.array([query.alpha, 0])
 
