@@ -37,9 +37,9 @@ mutation_percent_genes = 10
 
 def fitness_function(ga_instance, parameters, solution_idx):
     global i
-    player = Net.Net(parameters)
     overall_fitness = 0
     for trial in range(number_of_trials):
+        player = Net.Net(parameters)
         environment = VirtualEnvironment([player])
         environment.calculate_full_simulation()
         environment.fitness_function()
