@@ -10,7 +10,7 @@ import Net
 
 number_of_trials = 4  # number of games played to evaluate fitness
 
-time_of_learning = 60*60*7  # the GA will do as many generations as it can within the given time
+time_of_learning = 60*60*6  # the GA will do as many generations as it can within the given time
 break_time = 60*30  # due to fear of killing my weak laptop, I will give it breaks to cool down
 time_between_breaks = 60*60*1.5
 
@@ -75,8 +75,9 @@ while time.time() - starting_time < time_of_learning:
     print(f"--- generation avg fitness: {np.mean(ga_instance.last_generation_fitness)}")
     i=0
     generation_number += 1
-    if time.time() - last_break < time_between_breaks:
+    if time.time() - last_break > time_between_breaks:
         time.sleep(break_time)
+        last_break = time.time()
 
 
 solution, solution_fitness, solution_idx = ga_instance.best_solution()
