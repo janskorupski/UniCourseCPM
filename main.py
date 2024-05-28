@@ -11,7 +11,7 @@ filename = None  # if supplied, ga will continue learning from the supplied save
 save_solutions = True  # this is passed to the GA instance
 
 display_results = True  # if the best player should be displayed
-teach_players = True
+teach_players = False
 
 # time management
 time_of_learning = 60*5  # the GA will do as many generations as it can within the given time
@@ -57,7 +57,7 @@ def fitness_function(ga_instance, parameters, solution_idx):
 
     i += 1
     print(f"{i}/{num_generations*sol_per_pop} : {overall_fitness/number_of_trials}")
-    return overall_fitness/4
+    return overall_fitness/number_of_trials
 
 if teach_players:
 
@@ -99,6 +99,20 @@ if teach_players:
     solution, solution_fitness, solution_idx = ga_instance.best_solution()
     # print("Parameters of the best solution : {solution}".format(solution=solution))
     print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
+
+def view_player(parameters):
+    overall_fitness = 0
+    for trial in range(number_of_trials):
+        player = Net.Net(parameters)
+
+        # the seed is calculated as any function of the parameters and trial to enable replicating and viewing
+        environment = VirtualEnvironment([player], game_mode=True, seed=np.sum(parameters) + trial)
+        environment.calculate_full_simulation()
+        environment.fitness_function()
+        overall_fitness += player.fitness
+        print(f"fitness in trial {trial} : player.fitness")
+
+    print(f"overall fitness : {overall_fitness / number_of_trials}")
 
 
 if display_results:
