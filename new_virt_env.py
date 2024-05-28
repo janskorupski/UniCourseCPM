@@ -27,7 +27,7 @@ class VirtualEnvironment:
 
         # GAME SETTINGS
         self.in_game_time = 0
-        self.max_time = 600
+        self.max_time = 1200
 
         # GAME OBJECTS
         self.players = players  # for now this should always be a list of length 1 with one object of type Player

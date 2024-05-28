@@ -3,18 +3,19 @@ import time
 import pygad
 from new_virt_env import *
 import Net
+import matplotlib.pyplot as plt
 
 # PARAMETERS
 #  SCRIPT PARAMETERS:
 
-filename = None  # if supplied, ga will continue learning from the supplied save
+filename = None  # if supplied, ga will continue learning from the supplied save; without the extention(!)
 save_solutions = True  # this is passed to the GA instance
 
 display_results = True  # if the best player should be displayed
 teach_players = True
 
 # time management
-time_of_learning = 60*5  # the GA will do as many generations as it can within the given time
+time_of_learning = 60*60*2  # the GA will do as many generations as it can within the given time
 break_time = 60*30  # due to fear of killing my weak laptop, I will give it breaks to cool down
 time_between_breaks = 60*60*1.5
 
@@ -24,7 +25,7 @@ number_of_trials = 4  # number of games played to evaluate fitness
 num_generations = 1  # 1 is enough, since this learning will be repeated multiple times
 num_parents_mating = 5
 
-sol_per_pop = 10
+sol_per_pop = 50
 num_genes = 900  # number of parameters to be used in the Players' neural networks
 
 init_range_low = -0.5
@@ -41,6 +42,8 @@ mutation_percent_genes = 10
 # HELP VARIABLES
 i = 0
 generation_number = 1  # help variable to keep track of numbers of generations
+means = np.empty([])
+maxes = np.empty([])
 
 
 def fitness_function(ga_instance, parameters, solution_idx):
@@ -87,20 +90,28 @@ if teach_players:
         ga_instance.run()
         ga_instance.save(filename)
         print(f"--- generation avg fitness: {np.mean(ga_instance.last_generation_fitness)}")
+        np.append(means, np.mean(ga_instance.last_generation_fitness))
+        np.append(maxes, np.mean(ga_instance.last_generation_fitness))
+
         i=0
         generation_number += 1
         if time.time() - last_break > time_between_breaks:
             time.sleep(break_time)
             last_break = time.time()
 
-
     solution, solution_fitness, solution_idx = ga_instance.best_solution()
     # print("Parameters of the best solution : {solution}".format(solution=solution))
     print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
-
+    ga_instance.plot_fitness(title="PyGAD fitness score")
 
 if display_results:
     player = Net.Net(solution)
     environment = VirtualEnvironment([player], game_mode=True)
     environment.calculate_full_simulation()
     environment.fitness_function()
+
+    fig = plt.figure()
+
+    plt.plot(means, title = "mean fitness score")
+    #plt.plot(maxes, title = "max fitness score")
+    fig.savefig(f"{filename}_plots")
