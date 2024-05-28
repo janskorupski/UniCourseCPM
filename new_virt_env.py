@@ -196,7 +196,7 @@ class VirtualEnvironment:
         # use self.calculate_step and player.get_motor_output in a loop until some conditions are met
         if self.game_mode:
             running = True
-            while running:
+            while running and self.in_game_time < self.max_time:
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         running = False
