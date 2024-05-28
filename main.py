@@ -48,7 +48,9 @@ def fitness_function(ga_instance, parameters, solution_idx):
     overall_fitness = 0
     for trial in range(number_of_trials):
         player = Net.Net(parameters)
-        environment = VirtualEnvironment([player])
+
+        # the seed is calculated as any function of the parameters and trial to enable replicating and viewing
+        environment = VirtualEnvironment([player], seed=np.sum(parameters) + trial)
         environment.calculate_full_simulation()
         environment.fitness_function()
         overall_fitness += player.fitness
