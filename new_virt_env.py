@@ -31,7 +31,7 @@ class VirtualEnvironment:
 
         # GAME SETTINGS
         self.in_game_time = 0
-        self.max_time = 600
+        self.max_time = 2000
 
         # GAME OBJECTS
         self.players = players  # for now this should always be a list of length 1 with one object of type Player
@@ -215,9 +215,10 @@ class VirtualEnvironment:
 
                 # Cap the frame rate
                 self.clock.tick(600)
+
+            pygame.quit()
+
         else:
-            start_time = time.time()
-            running = True
             while self.in_game_time < self.max_time:
 
                 # Step the simulation
