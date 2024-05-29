@@ -31,20 +31,17 @@ init_range_low = -0.5
 init_range_high = 0.5
 
 parent_selection_type = "sss"
-keep_parents = 1
+
+keep_parents = 1  # doesn't do anything if keep_elitism != 0
+keep_elitism = 1
 
 crossover_type = "single_point"
 
 mutation_type = "random"
 mutation_percent_genes = 10
 
-# HELP VARIABLES
-i = 0
-generation_number = 1  # help variable to keep track of numbers of generations
-
 
 def fitness_function(ga_instance, parameters, solution_idx):
-    global i
     overall_fitness = 0
     for trial in range(number_of_trials):
         player = Net.Net(parameters)
@@ -55,9 +52,9 @@ def fitness_function(ga_instance, parameters, solution_idx):
         environment.fitness_function()
         overall_fitness += player.fitness
 
-    i += 1
-    print(f"{i}/{num_generations*sol_per_pop} : {overall_fitness/number_of_trials}")
+    print(f"gen:{ga_instance.generations_completed} sol:{solution_idx} fit:{overall_fitness/number_of_trials}")
     return overall_fitness/number_of_trials
+
 
 if teach_players:
 
@@ -71,6 +68,7 @@ if teach_players:
                                init_range_high=init_range_high,
                                parent_selection_type=parent_selection_type,
                                keep_parents=keep_parents,
+                               keep_elitism=keep_elitism,
                                crossover_type=crossover_type,
                                mutation_type=mutation_type,
                                mutation_percent_genes=mutation_percent_genes,
@@ -84,20 +82,16 @@ if teach_players:
     starting_time = time.time()
     last_break = time.time()
     while time.time() - starting_time < time_of_learning:
-        print(f"--- generation {generation_number} ---")
+        print(f"--- generation {ga_instance.generations_completed} ---")
         ga_instance.run()
         ga_instance.save(filename)
         print(f"--- generation avg fitness: {np.mean(ga_instance.last_generation_fitness)}")
-        i=0
-        generation_number += 1
+        print(f"--- generation max fitness: {np.max(ga_instance.last_generation_fitness)}")
         if time.time() - last_break > time_between_breaks:
             time.sleep(break_time)
             last_break = time.time()
 
-    solution, solution_fitness, solution_idx = ga_instance.best_solution()
-    # print("Parameters of the best solution : {solution}".format(solution=solution))
-    print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
-else:
+else:  # if not teach players
     if filename is not None:
         ga_instance = pygad.load(filename)
         solution, solution_fitness, solution_idx = ga_instance.best_solution()
