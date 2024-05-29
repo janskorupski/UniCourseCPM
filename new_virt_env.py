@@ -138,6 +138,19 @@ class VirtualEnvironment:
             position = (random.randint(buffer_size[0], WIDTH - buffer_size[0]), 
                         random.randint(buffer_size[1], HEIGHT - buffer_size[1]))
 
+                        
+            if element=='apple': 
+                # additional space constraint for apple postion
+                r = distance_from_player = self.R * 10 # this constant could be potentially changed with iterations 
+                positions = []
+                for w in range(WIDTH): 
+                    for h in range(HEIGHT): 
+                        dist = math.dist((w,h), self.players[0].body.position).__floor__() 
+                        if r - 3 < dist < r + 3: 
+                            positions.append((w,h))
+                position = random.choice(positions)
+
+
             # Create a temporary shape at the position
             body = pymunk.Body(body_type=pymunk.Body.STATIC)
             body.position = position
