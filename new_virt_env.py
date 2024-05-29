@@ -23,7 +23,7 @@ CENTER = (WIDTH//2, HEIGHT//2)
 
 class VirtualEnvironment:
 
-    def __init__(self, players, n_obstacles=15, game_mode=False, seed=None):
+    def __init__(self, players, n_obstacles=15, max_time=1200, game_mode=False, seed=None):
 
         self.seed = seed
         if seed is not None:
@@ -31,7 +31,7 @@ class VirtualEnvironment:
 
         # GAME SETTINGS
         self.in_game_time = 0
-        self.max_time = 2000
+        self.max_time = max_time
 
         # GAME OBJECTS
         self.players = players  # for now this should always be a list of length 1 with one object of type Player
