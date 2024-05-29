@@ -7,7 +7,7 @@ import Net
 # PARAMETERS
 #  SCRIPT PARAMETERS:
 
-filename = None  # if supplied, ga will continue learning from the supplied save
+filename = "GAresults97764"  # if supplied, ga will continue learning from the supplied save
 save_solutions = True  # this is passed to the GA instance
 
 display_results = True  # if the best player should be displayed
@@ -81,7 +81,6 @@ if teach_players:
     else:
         ga_instance = pygad.load(filename)
 
-
     starting_time = time.time()
     last_break = time.time()
     while time.time() - starting_time < time_of_learning:
@@ -95,12 +94,18 @@ if teach_players:
             time.sleep(break_time)
             last_break = time.time()
 
-
     solution, solution_fitness, solution_idx = ga_instance.best_solution()
     # print("Parameters of the best solution : {solution}".format(solution=solution))
     print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
+else:
+    if filename is not None:
+        ga_instance = pygad.load(filename)
+        solution, solution_fitness, solution_idx = ga_instance.best_solution()
 
 def view_player(parameters):
+    if type(parameters) is not np.ndarray:
+        parameters = np.array(parameters)
+
     overall_fitness = 0
     for trial in range(number_of_trials):
         player = Net.Net(parameters)
@@ -110,7 +115,7 @@ def view_player(parameters):
         environment.calculate_full_simulation()
         environment.fitness_function()
         overall_fitness += player.fitness
-        print(f"fitness in trial {trial} : player.fitness")
+        print(f"fitness in trial {trial} : {player.fitness}")
 
     print(f"overall fitness : {overall_fitness / number_of_trials}")
 
