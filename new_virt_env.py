@@ -17,17 +17,22 @@ APPLE_CATEGORY  = 0b0100
 ALL_CATEGORIES  = [PLAYER_CATEGORY, WALL_CATEGORY, APPLE_CATEGORY]
 PLAYER_COLLISION_TYPE = 1
 APPLE_COLLISION_TYPE = 2
-WIDTH, HEIGHT = SIZE =  (800,400) 
+WIDTH, HEIGHT = SIZE =  (800, 400)
 CENTER = (WIDTH//2, HEIGHT//2)
 
 
 class VirtualEnvironment:
 
-    def __init__(self, players, n_obstacles=15, game_mode=False):
+    def __init__(self, players, n_obstacles=15, max_time=1200, game_mode=False, seed=None):
+
+        self.seed = seed
+        if seed is not None:
+            random.seed(seed)
 
         # GAME SETTINGS
         self.in_game_time = 0
-        self.max_time = 1200
+
+        self.max_time = max_time
 
         # GAME OBJECTS
         self.players = players  # for now this should always be a list of length 1 with one object of type Player
@@ -205,7 +210,7 @@ class VirtualEnvironment:
         # use self.calculate_step and player.get_motor_output in a loop until some conditions are met
         if self.game_mode:
             running = True
-            while running:
+            while running and self.in_game_time < self.max_time:
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         running = False
@@ -224,9 +229,10 @@ class VirtualEnvironment:
 
                 # Cap the frame rate
                 self.clock.tick(600)
+
+            pygame.quit()
+
         else:
-            start_time = time.time()
-            running = True
             while self.in_game_time < self.max_time:
 
                 # Step the simulation
@@ -260,7 +266,7 @@ if __name__ == "__main__":
     # player = Newb.Newb()
     player = Net.Net(parameters=np.random.random(900))
     # player = Net.Net(parameters=np.arange(900, dtype="float"))
-    env1 = VirtualEnvironment(players=[player], game_mode=True)
+    env1 = VirtualEnvironment(players=[player], game_mode=True, seed=1234)
     env1.calculate_full_simulation()
     env1.fitness_function()
     print(player.fitness)
