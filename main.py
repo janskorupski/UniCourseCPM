@@ -2,17 +2,20 @@ import time
 import pygad
 from new_virt_env import *
 import Net
+import matplotlib.pyplot as plt
 
 # PARAMETERS
 #  SCRIPT PARAMETERS:
 
-filename = None # if supplied, ga will continue learning from the supplied save
+
+filename = None  # if supplied, ga will continue learning from the supplied save; without the extention(!)
 save_solutions = True  # this is passed to the GA instance
 
 display_results = False  # after each generation, a random parent will be shown
 
 # time management
-time_of_learning = 60*15  # the GA will do as many generations as it can within the given time
+
+time_of_learning = 60*60*2  # the GA will do as many generations as it can within the given time
 break_time = 60*30  # due to fear of killing my weak laptop, I will give it breaks to cool down
 time_between_breaks = 60*60*1.5
 
@@ -25,7 +28,7 @@ n_obstacles = 15
 num_generations = 1  # 1 is enough, since this learning will be repeated multiple times
 num_parents_mating = 5
 
-sol_per_pop = 10
+sol_per_pop = 50
 num_genes = 900  # number of parameters to be used in the Players' neural networks
 
 init_range_low = -0.5
@@ -41,10 +44,10 @@ crossover_type = "single_point"
 mutation_type = "random"
 mutation_percent_genes = 10
 
-
 def fitness_function(ga_instance, parameters, solution_idx):
     overall_fitness = 0
     for trial in range(number_of_trials):
+
         net_player = Net.Net(parameters)
 
         # the seed is calculated as any function of the parameters and trial to enable replicating and viewing
