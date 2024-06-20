@@ -1,6 +1,6 @@
 # Training neural networks to steer robots in 2d space
 
-This repository contains a project for the subject 'Cognitive Procesess Modelling II'. This repository is available at github under https://github.com/janskorupski/UniCourseCPM/tree/main.
+This repository contains a project for the subject 'Cognitive Processes Modelling II'. This repository is available at github under https://github.com/janskorupski/UniCourseCPM/tree/main.
 
 ## Description
 
@@ -17,11 +17,11 @@ The virtual environment also has the option to turn on the 'game mode', in which
 ### Players
 The class `Player` defines how an algorithm (or a human) interacts with the virtual environment. 
  - Players of subclass `Net` are steered by a small neural network. The parameters of the network need to be given at initialisation.
- - Players of subclass `Human` can be steered by a user using the kets 'awsd' on the keyboard.
+ - Players of subclass `Human` can be steered by a user using the keys 'awsd' on the keyboard.
  - Players of subclass `Noob` are steered by a tiny neural network (7 neurons, 2 layers) which has been written 'by hand'. The players are somewhat able to find the rewards. This class is for demonstration purposes only.
 
 ### Learning
-The learning is done in the 'main.py' file using the Genetic Algorithm. The file has been constructed in such a way as to enable settting the algorithm to run for a prespecified amount of time and to save the results often to make sure no data is lost.
+The learning is done in the 'main.py' file using the Genetic Algorithm. The file has been constructed in such a way as to enable setting the algorithm to run for a prespecified amount of time and to save the results often to make sure no data is lost.
 The fitness function used by the genetic algorithm creates a new player based on the parameter vector, then a new virtual environment (with a seed based on the parameter vector to enable rewatching specific runs), runs the full simulation and calculates the fitness score.
 
 The final fitness score is defined as follows
